@@ -1,0 +1,26 @@
+{
+  "version": "1.0.0",
+  "updated_at": "2026-11-22",
+  "offers": [
+    {
+      "id": "community:seed-iphone13mini-01",
+      "vintage_id": "apple-iphone-13-mini-2021",
+      "source": "community",
+      "url": "https://github.com/Noobucodonosor/v.i.n.o.",
+      "title": "iPhone 13 mini 128GB Midnight Sigillato NOS (Segnalazione iniziale)",
+      "condition": "sealed",
+      "currency": "EUR",
+      "status": "active",
+      "first_seen": "2026-11-22",
+      "last_seen": "2026-11-22",
+      "closed_at": null,
+      "missed_runs": 0,
+      "price_history": [
+        {
+          "date": "2026-11-22",
+          "price": 590
+        }
+      ]
+    }
+  ]
+}
