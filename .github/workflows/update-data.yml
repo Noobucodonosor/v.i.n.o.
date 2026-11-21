@@ -1,0 +1,51 @@
+name: Update Market Data
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-market:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run market update script
+        env:
+          EBAY_OAUTH_TOKEN: ${{ secrets.EBAY_OAUTH_TOKEN }}
+          ENABLE_EU_CONNECTORS: ${{ vars.ENABLE_EU_CONNECTORS || 'false' }}
+        run: python3 scripts/update_vintages.py
+
+      - name: Validate updated JSON against Zod schemas
+        run: npm test
+
+      - name: Commit updated data if changed
+        run: |
+          if [ -n "$(git status --porcelain src/data/offers.json src/data/market-history.json)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add src/data/offers.json src/data/market-history.json
+            git commit -m "chore(data): update tracked offers and market history"
+            git push
+          else
+            echo "Nessuna variazione nei dati di mercato."
+          fi
