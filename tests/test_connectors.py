@@ -11,8 +11,25 @@ from scripts.update_vintages import run_update
 
 class TestConnectorsAndPipeline(unittest.TestCase):
     def test_ebay_connector_graceful_without_token(self) -> None:
-        conn = EbayConnector(token="")
+        conn = EbayConnector(token="", client_id="", client_secret="")
         self.assertEqual(conn.fetch_offers([{"id": "apple-iphone-13-mini-2021", "brand": "Apple", "model": "iPhone 13 mini"}]), [])
+
+    def test_ebay_connector_exchanges_client_credentials(self) -> None:
+        seen_headers: list[dict[str, str]] = []
+
+        def fake_fetch(_url: str, headers: dict[str, str]) -> dict:
+            seen_headers.append(headers)
+            return {"itemSummaries": []}
+
+        conn = EbayConnector(
+            token="",
+            client_id="cid",
+            client_secret="csec",
+            fetcher=fake_fetch,
+            token_exchanger=lambda cid, csec: f"fresh-{cid}-{csec}",
+        )
+        conn.fetch_offers([{"id": "apple-iphone-13-mini-2021", "brand": "Apple", "model": "iPhone 13 mini"}])
+        self.assertEqual(seen_headers[0]["Authorization"], "Bearer fresh-cid-csec")
 
     def test_ebay_connector_normalizes_mock_payload(self) -> None:
         mock_payload = {
