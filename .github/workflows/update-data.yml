@@ -23,7 +23,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '24'
           cache: 'npm'
 
       - name: Install dependencies
@@ -31,6 +31,8 @@ jobs:
 
       - name: Run market update script
         env:
+          EBAY_CLIENT_ID: ${{ secrets.EBAY_CLIENT_ID }}
+          EBAY_CLIENT_SECRET: ${{ secrets.EBAY_CLIENT_SECRET }}
           EBAY_OAUTH_TOKEN: ${{ secrets.EBAY_OAUTH_TOKEN }}
           ENABLE_EU_CONNECTORS: ${{ vars.ENABLE_EU_CONNECTORS || 'false' }}
         run: python3 scripts/update_vintages.py
