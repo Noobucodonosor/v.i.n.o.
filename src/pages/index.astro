@@ -1,5 +1,12 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import VintageCalculator from '../components/VintageCalculator.astro';
+import VintageComparator from '../components/VintageComparator.astro';
+import rawVintages from '../data/vintages.json';
+import { VintagesDatasetSchema } from '../schemas/vintage';
+
+const dataset = VintagesDatasetSchema.parse(rawVintages);
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 
 <Layout title="v.i.n.o. — Annate Smartphone New Old Stock">
@@ -11,19 +18,25 @@ import Layout from '../layouts/Layout.astro';
     </p>
   </header>
 
-  <section class="grid" aria-label="Moduli in arrivo">
-    <article class="card">
-      <h2>Calcolatore Annata</h2>
-      <p>Valuta il punteggio di un dispositivo sigillato o New Old Stock in base a modello, anno, conservazione e rischio batteria.</p>
-    </article>
-    <article class="card">
-      <h2>Comparatore</h2>
-      <p>Confronta due o più annate fianco a fianco su collezionabilità, riparabilità e tenuta del valore.</p>
-    </article>
-    <article class="card">
-      <h2>Market Tracker</h2>
-      <p>Monitoraggio persistente delle offerte e serie storica dei prezzi reali di mercato.</p>
-    </article>
+  <div id="vintages-data" data-vintages={JSON.stringify(dataset.vintages)} hidden></div>
+
+  <VintageCalculator vintages={dataset.vintages} />
+  <VintageComparator vintages={dataset.vintages} />
+
+  <section class="catalog" aria-labelledby="catalog-heading">
+    <h2 id="catalog-heading">Catalogo Annate &amp; Mercato</h2>
+    <div class="catalog-grid">
+      {dataset.vintages.map((v) => (
+        <a class="vintage-card" href={`${base}/vintage/${v.id}/`}>
+          <div class="card-top">
+            <span class="year">{v.release_year}</span>
+            <span class="grade-pill">{v.vintage_grade}</span>
+          </div>
+          <h3>{v.brand} {v.model}</h3>
+          <p class="card-meta">Punteggio: <strong>{v.vintage_score}/100</strong> · €{v.estimated_value_eur.min}–€{v.estimated_value_eur.max}</p>
+        </a>
+      ))}
+    </div>
   </section>
 </Layout>
 
@@ -56,28 +69,60 @@ import Layout from '../layouts/Layout.astro';
     margin: 0;
   }
 
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 1.25rem;
-  }
-
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 1.5rem;
-  }
-
-  .card h2 {
-    margin: 0 0 0.5rem;
-    font-size: 1.1rem;
+  .catalog h2 {
+    margin: 0 0 1rem;
     color: var(--accent);
   }
 
-  .card p {
-    margin: 0;
+  .catalog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+  }
+
+  .vintage-card {
+    display: block;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.15rem;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .vintage-card:hover {
+    border-color: var(--accent);
+  }
+
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.4rem;
+    font-size: 0.8rem;
+  }
+
+  .year {
+    font-weight: 700;
     color: var(--muted);
-    font-size: 0.95rem;
+  }
+
+  .grade-pill {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    font-weight: 600;
+  }
+
+  .vintage-card h3 {
+    margin: 0 0 0.35rem;
+    font-size: 1.05rem;
+  }
+
+  .card-meta {
+    margin: 0;
+    font-size: 0.88rem;
+    color: var(--muted);
   }
 </style>

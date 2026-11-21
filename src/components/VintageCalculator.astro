@@ -1,0 +1,230 @@
+---
+import type { Vintage } from '../schemas/vintage';
+
+interface Props {
+  vintages: Vintage[];
+}
+
+const { vintages } = Astro.props;
+const defaultVintage = vintages[0];
+---
+
+<section class="panel" aria-labelledby="calc-heading">
+  <div class="panel-header">
+    <h2 id="calc-heading">Calcolatore Annata</h2>
+    <p>Stima punteggio, classificazione e range di valore di un dispositivo New Old Stock.</p>
+  </div>
+
+  <div class="calc-grid">
+    <form id="vintage-calc-form" class="controls">
+      <label>
+        <span>Modello &amp; Annata</span>
+        <select name="vintageId" id="calc-vintage">
+          {vintages.map((v) => (
+            <option value={v.id}>{v.brand} {v.model} ({v.release_year})</option>
+          ))}
+        </select>
+      </label>
+
+      <label>
+        <span>Stato Sigillo</span>
+        <select name="sealState" id="calc-seal">
+          <option value="sealed_mint">Sigillato perfetto (Mint)</option>
+          <option value="sealed_shelf_wear">Sigillato con segni da scaffale</option>
+          <option value="nos_open_box">Scatola aperta, mai usato (NOS)</option>
+        </select>
+      </label>
+
+      <label>
+        <span>Conservazione</span>
+        <select name="storageEnv" id="calc-storage">
+          <option value="controlled">Cantina controllata (fresco/asciutto)</option>
+          <option value="unknown" selected>Sconosciuta / standard</option>
+          <option value="warm">Ambiente caldo o umido</option>
+        </select>
+      </label>
+
+      <label>
+        <span>Corredo Scatola</span>
+        <select name="boxCompleteness" id="calc-box">
+          <option value="complete">Completo (accessori originali)</option>
+          <option value="partial">Incompleto / solo telefono</option>
+        </select>
+      </label>
+    </form>
+
+    <div class="result-card" aria-live="polite">
+      <div class="score-row">
+        <div>
+          <span class="label">Punteggio Annata</span>
+          <strong class="score" id="calc-score">{defaultVintage.vintage_score}</strong><span class="unit">/100</span>
+        </div>
+        <span class="badge" id="calc-grade">{defaultVintage.vintage_grade}</span>
+      </div>
+
+      <div class="value-row">
+        <span class="label">Valore Stimato</span>
+        <p class="price" id="calc-price">
+          €{defaultVintage.estimated_value_eur.min} – €{defaultVintage.estimated_value_eur.max}
+        </p>
+      </div>
+
+      <p class="summary" id="calc-summary">{defaultVintage.tasting_notes.summary}</p>
+      <p class="warning" id="calc-warning">Rischio batteria: {defaultVintage.metrics.battery_risk}</p>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { calculateVintageValuation, type CalculatorInput } from '../lib/scoring';
+  import type { Vintage } from '../schemas/vintage';
+
+  const dataEl = document.getElementById('vintages-data');
+  const vintages: Vintage[] = dataEl?.dataset.vintages ? JSON.parse(dataEl.dataset.vintages) : [];
+
+  const form = document.getElementById('vintage-calc-form') as HTMLFormElement | null;
+  const selectVintage = document.getElementById('calc-vintage') as HTMLSelectElement | null;
+  const selectSeal = document.getElementById('calc-seal') as HTMLSelectElement | null;
+  const selectStorage = document.getElementById('calc-storage') as HTMLSelectElement | null;
+  const selectBox = document.getElementById('calc-box') as HTMLSelectElement | null;
+
+  const outScore = document.getElementById('calc-score');
+  const outGrade = document.getElementById('calc-grade');
+  const outPrice = document.getElementById('calc-price');
+  const outSummary = document.getElementById('calc-summary');
+  const outWarning = document.getElementById('calc-warning');
+
+  function updateCalculator() {
+    if (!selectVintage || !selectSeal || !selectStorage || !selectBox) return;
+    const selected = vintages.find((v) => v.id === selectVintage.value);
+    if (!selected) return;
+
+    const input: CalculatorInput = {
+      sealState: selectSeal.value as CalculatorInput['sealState'],
+      storageEnv: selectStorage.value as CalculatorInput['storageEnv'],
+      boxCompleteness: selectBox.value as CalculatorInput['boxCompleteness'],
+    };
+
+    const result = calculateVintageValuation(selected, input);
+    if (outScore) outScore.textContent = String(result.adjustedScore);
+    if (outGrade) outGrade.textContent = result.grade;
+    if (outPrice) {
+      outPrice.textContent = `€${result.estimatedValueEur.min} – €${result.estimatedValueEur.max} (mediana €${result.estimatedValueEur.midpoint})`;
+    }
+    if (outSummary) outSummary.textContent = selected.tasting_notes.summary;
+    if (outWarning) outWarning.textContent = result.batteryWarning;
+  }
+
+  form?.addEventListener('change', updateCalculator);
+  updateCalculator();
+</script>
+
+<style>
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.75rem;
+    margin-bottom: 2rem;
+  }
+
+  .panel-header h2 {
+    margin: 0 0 0.25rem;
+    color: var(--accent);
+  }
+
+  .panel-header p {
+    margin: 0 0 1.5rem;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+
+  .calc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+    align-items: start;
+  }
+
+  .controls {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .controls label {
+    display: grid;
+    gap: 0.35rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+
+  .controls select {
+    padding: 0.55rem 0.7rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg);
+    color: var(--ink);
+    font: inherit;
+  }
+
+  .result-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem;
+  }
+
+  .score-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .label {
+    display: block;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+  }
+
+  .score {
+    font-size: 2.25rem;
+    color: var(--accent);
+  }
+
+  .unit {
+    color: var(--muted);
+    font-size: 1rem;
+  }
+
+  .badge {
+    background: var(--accent);
+    color: #fff;
+    padding: 0.3rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.82rem;
+    font-weight: 700;
+  }
+
+  .price {
+    margin: 0.2rem 0 1rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+
+  .summary {
+    margin: 0 0 0.75rem;
+    font-size: 0.92rem;
+  }
+
+  .warning {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+    padding-top: 0.75rem;
+  }
+</style>

@@ -1,0 +1,128 @@
+---
+import type { MarketSnapshot } from '../schemas/offer';
+
+interface Props {
+  snapshots: MarketSnapshot[];
+}
+
+const { snapshots } = Astro.props;
+const prices = snapshots
+  .flatMap((s) => [s.median_asking_eur, s.median_sold_eur])
+  .filter((p): p is number => p !== null);
+const maxPrice = prices.length > 0 ? Math.max(...prices) : 1;
+---
+
+<section class="panel" aria-labelledby="market-chart-heading">
+  <h2 id="market-chart-heading">Storico Mercato</h2>
+  {snapshots.length === 0 ? (
+    <p class="empty">Nessuno snapshot storico ancora registrato per questa annata.</p>
+  ) : (
+    <div class="snapshots">
+      {snapshots.map((snap) => {
+        const askingPct = snap.median_asking_eur ? Math.round((snap.median_asking_eur / maxPrice) * 100) : 0;
+        const soldPct = snap.median_sold_eur ? Math.round((snap.median_sold_eur / maxPrice) * 100) : 0;
+        return (
+          <div class="snap-row">
+            <span class="snap-date">{snap.date}</span>
+            <div class="bars">
+              {snap.median_asking_eur !== null && (
+                <div class="bar-wrap">
+                  <span class="bar asking" style={`width: ${askingPct}%`}></span>
+                  <span class="bar-label">Richiesta med.: €{snap.median_asking_eur}</span>
+                </div>
+              )}
+              {snap.median_sold_eur !== null && (
+                <div class="bar-wrap">
+                  <span class="bar sold" style={`width: ${soldPct}%`}></span>
+                  <span class="bar-label">Venduto med.: €{snap.median_sold_eur}</span>
+                </div>
+              )}
+            </div>
+            <span class="counts">
+              {snap.active_count} attive · {snap.sold_count} vendute · {snap.expired_count} scadute
+            </span>
+          </div>
+        );
+      })}
+    </div>
+  )}
+</section>
+
+<style>
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  h2 {
+    margin: 0 0 1rem;
+    color: var(--accent);
+    font-size: 1.2rem;
+  }
+
+  .empty {
+    margin: 0;
+    color: var(--muted);
+  }
+
+  .snapshots {
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  .snap-row {
+    display: grid;
+    grid-template-columns: 100px 1fr auto;
+    gap: 1rem;
+    align-items: center;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+  }
+
+  .snap-date {
+    font-weight: 600;
+  }
+
+  .bars {
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  .bar-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .bar {
+    display: inline-block;
+    height: 10px;
+    border-radius: 999px;
+    min-width: 8px;
+  }
+
+  .bar.asking {
+    background: var(--accent);
+  }
+
+  .bar.sold {
+    background: #2f6b4f;
+  }
+
+  .bar-label,
+  .counts {
+    color: var(--muted);
+    font-size: 0.84rem;
+  }
+
+  @media (max-width: 640px) {
+    .snap-row {
+      grid-template-columns: 1fr;
+      gap: 0.4rem;
+    }
+  }
+</style>

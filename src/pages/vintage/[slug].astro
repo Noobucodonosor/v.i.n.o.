@@ -1,0 +1,147 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import MarketChart from '../../components/MarketChart.astro';
+import OffersLedger from '../../components/OffersLedger.astro';
+import rawVintages from '../../data/vintages.json';
+import rawOffers from '../../data/offers.json';
+import rawHistory from '../../data/market-history.json';
+import { VintagesDatasetSchema, type Vintage } from '../../schemas/vintage';
+import { MarketHistorySchema, OffersLedgerSchema } from '../../schemas/offer';
+
+export function getStaticPaths() {
+  const dataset = VintagesDatasetSchema.parse(rawVintages);
+  return dataset.vintages.map((vintage) => ({
+    params: { slug: vintage.id },
+    props: { vintage },
+  }));
+}
+
+interface Props {
+  vintage: Vintage;
+}
+
+const { vintage } = Astro.props;
+const offersLedger = OffersLedgerSchema.parse(rawOffers);
+const marketHistory = MarketHistorySchema.parse(rawHistory);
+
+const vintageOffers = offersLedger.offers.filter((o) => o.vintage_id === vintage.id);
+const vintageSnapshots = marketHistory.series[vintage.id] ?? [];
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<Layout title={`${vintage.brand} ${vintage.model} (${vintage.release_year}) — v.i.n.o.`}>
+  <nav class="breadcrumb">
+    <a href={`${base}/`}>← Torna al calcolatore e catalogo</a>
+  </nav>
+
+  <header class="vintage-header">
+    <div>
+      <p class="eyebrow">{vintage.brand} · Annata {vintage.release_year}</p>
+      <h1>{vintage.model}</h1>
+      <p class="summary">{vintage.tasting_notes.summary}</p>
+    </div>
+    <div class="score-box">
+      <span class="score">{vintage.vintage_score}</span>
+      <span class="grade">{vintage.vintage_grade}</span>
+    </div>
+  </header>
+
+  <section class="metrics-grid" aria-label="Metriche annata">
+    <div class="metric"><span>Collezionabilità</span><strong>{vintage.metrics.collectibility}/100</strong></div>
+    <div class="metric"><span>Riparabilità</span><strong>{vintage.metrics.repairability}/100</strong></div>
+    <div class="metric"><span>Longevità SW</span><strong>{vintage.metrics.software_longevity}/100</strong></div>
+    <div class="metric"><span>Rischio Batteria</span><strong>{vintage.metrics.battery_risk}</strong></div>
+    <div class="metric"><span>Valore Stimato</span><strong>€{vintage.estimated_value_eur.min}–€{vintage.estimated_value_eur.max}</strong></div>
+  </section>
+
+  <MarketChart snapshots={vintageSnapshots} />
+  <OffersLedger offers={vintageOffers} />
+</Layout>
+
+<style>
+  .breadcrumb {
+    margin-bottom: 1.5rem;
+  }
+
+  .breadcrumb a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .vintage-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 1.5rem;
+  }
+
+  .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin: 0 0 0.35rem;
+  }
+
+  h1 {
+    margin: 0 0 0.5rem;
+    font-size: clamp(1.8rem, 4vw, 2.75rem);
+  }
+
+  .summary {
+    margin: 0;
+    color: var(--muted);
+    max-width: 60ch;
+  }
+
+  .score-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    text-align: center;
+    min-width: 140px;
+  }
+
+  .score {
+    display: block;
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: var(--accent);
+  }
+
+  .grade {
+    font-size: 0.82rem;
+    font-weight: 700;
+  }
+
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.9rem;
+    margin-bottom: 2rem;
+  }
+
+  .metric {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.9rem 1rem;
+  }
+
+  .metric span {
+    display: block;
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-bottom: 0.25rem;
+  }
+
+  .metric strong {
+    font-size: 1.05rem;
+  }
+</style>
