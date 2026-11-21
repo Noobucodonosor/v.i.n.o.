@@ -1,0 +1,35 @@
+name: ADR & Pre-Release Gate
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  methodology-and-security-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check for oversized tracked files (>50 MB)
+        run: |
+          oversized=$(git ls-files -z | xargs -0 stat -c '%s %n' 2>/dev/null | awk '$1 > 52428800 {printf "%.1f MB %s\n", $1/1048576, $2}')
+          if [ -n "$oversized" ]; then
+            echo "❌ File superiori a 50 MB rilevati nel repository:"
+            echo "$oversized"
+            exit 1
+          fi
+
+      - name: Run pre_release_check.py (if present in repo)
+        if: hashFiles('scripts/pre_release_check.py') != ''
+        run: python3 scripts/pre_release_check.py .
+
+      - name: Verify ADR & AGENTS.md baseline
+        run: |
+          test -f AGENTS.md || { echo "⚠️ AGENTS.md mancante nella root"; exit 1; }
+          test -f docs/adr/README.md || { echo "⚠️ docs/adr/README.md mancante"; exit 1; }

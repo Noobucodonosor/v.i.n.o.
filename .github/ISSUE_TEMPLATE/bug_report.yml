@@ -1,0 +1,40 @@
+name: "🐛 Bug Report / Problema di Sicurezza"
+description: "Segnala un malfunzionamento o una vulnerabilità riscontrata"
+title: "[BUG] Breve descrizione del problema"
+labels: ["bug"]
+body:
+  - type: dropdown
+    id: severity
+    attributes:
+      label: "Gravità"
+      options:
+        - "P0-critical (Bloccante / Vulnerabilità di sicurezza)"
+        - "P1-high (Funzionalità principale compromessa)"
+        - "P2-medium (Problema minore o grafico)"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: "Descrizione del Problema"
+      description: "Cosa succede rispetto a cosa dovrebbe succedere?"
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: "Passi per Riprodurre"
+      value: |
+        1. Vai su '...'
+        2. Esegui '...'
+        3. Osserva l'errore '...'
+    validations:
+      required: true
+
+  - type: input
+    id: files
+    attributes:
+      label: "File / Endpoint Coinvolti (se noti)"
+      placeholder: "main.py (/api/...)"
