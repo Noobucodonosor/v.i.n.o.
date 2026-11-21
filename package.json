@@ -1,0 +1,30 @@
+{
+  "name": "v.i.n.o.",
+  "version": "1.0.0",
+  "description": "v.i.n.o. — Comparatore e market tracker per annate smartphone New Old Stock",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "test": "tsc --noEmit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Noobucodonosor/v.i.n.o..git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Noobucodonosor/v.i.n.o./issues"
+  },
+  "homepage": "https://github.com/Noobucodonosor/v.i.n.o.#readme",
+  "dependencies": {
+    "astro": "^7.4.13"
+  },
+  "devDependencies": {
+    "typescript": "^7.0.2"
+  }
+}

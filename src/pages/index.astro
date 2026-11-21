@@ -1,0 +1,83 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="v.i.n.o. — Annate Smartphone New Old Stock">
+  <header class="hero">
+    <p class="eyebrow">Vintage Index for New Old-stock</p>
+    <h1>v.i.n.o.</h1>
+    <p class="lead">
+      Gli smartphone nuovi ma mai usati sono come il vino: non invecchiano tutti allo stesso modo, ed esistono buone annate.
+    </p>
+  </header>
+
+  <section class="grid" aria-label="Moduli in arrivo">
+    <article class="card">
+      <h2>Calcolatore Annata</h2>
+      <p>Valuta il punteggio di un dispositivo sigillato o New Old Stock in base a modello, anno, conservazione e rischio batteria.</p>
+    </article>
+    <article class="card">
+      <h2>Comparatore</h2>
+      <p>Confronta due o più annate fianco a fianco su collezionabilità, riparabilità e tenuta del valore.</p>
+    </article>
+    <article class="card">
+      <h2>Market Tracker</h2>
+      <p>Monitoraggio persistente delle offerte e serie storica dei prezzi reali di mercato.</p>
+    </article>
+  </section>
+</Layout>
+
+<style>
+  .hero {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 2rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin: 0 0 0.5rem;
+  }
+
+  h1 {
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    margin: 0 0 0.75rem;
+    letter-spacing: -0.03em;
+  }
+
+  .lead {
+    font-size: 1.2rem;
+    color: var(--muted);
+    max-width: 62ch;
+    margin: 0;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem;
+  }
+
+  .card h2 {
+    margin: 0 0 0.5rem;
+    font-size: 1.1rem;
+    color: var(--accent);
+  }
+
+  .card p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+</style>
