@@ -1,0 +1,198 @@
+{
+  "version": "1.0.0",
+  "updated_at": "2026-11-22",
+  "vintages": [
+    {
+      "id": "apple-iphone-13-mini-2021",
+      "brand": "Apple",
+      "model": "iPhone 13 mini",
+      "release_year": 2021,
+      "vintage_score": 94,
+      "vintage_grade": "Gran Riserva",
+      "tasting_notes": {
+        "summary": "L'ultimo vero flagship compatto da 5.4 pollici di Cupertino: equilibrio raro tra prestazioni A15, fotocamera matura e supporto iOS prolungato.",
+        "bouquet": ["Compatto", "Ultimo Mini", "OLED", "MagSafe"],
+        "aging_potential": "Alto"
+      },
+      "metrics": {
+        "collectibility": 95,
+        "repairability": 68,
+        "software_longevity": 90,
+        "battery_risk": "Medio"
+      },
+      "estimated_value_eur": {
+        "min": 480,
+        "max": 690
+      },
+      "last_updated": "2026-11-22"
+    },
+    {
+      "id": "google-pixel-5-2020",
+      "brand": "Google",
+      "model": "Pixel 5",
+      "release_year": 2020,
+      "vintage_score": 89,
+      "vintage_grade": "Riserva",
+      "tasting_notes": {
+        "summary": "Scocca in alluminio bio-resina con cornici simmetriche e lettore d'impronte posteriore: ultima annata con backup illimitato Google Foto in Risparmio Spazio.",
+        "bouquet": ["Cornici Simmetriche", "Google Foto Illimitato", "Leggero"],
+        "aging_potential": "Alto"
+      },
+      "metrics": {
+        "collectibility": 90,
+        "repairability": 74,
+        "software_longevity": 78,
+        "battery_risk": "Medio"
+      },
+      "estimated_value_eur": {
+        "min": 290,
+        "max": 420
+      },
+      "last_updated": "2026-11-22"
+    },
+    {
+      "id": "samsung-galaxy-s10e-2019",
+      "brand": "Samsung",
+      "model": "Galaxy S10e",
+      "release_year": 2019,
+      "vintage_score": 84,
+      "vintage_grade": "Riserva",
+      "tasting_notes": {
+        "summary": "Schermo piatto AMOLED, jack audio da 3.5mm, microSD e sensore laterale capacitivo: un'annata irripetibile prima dell'era senza porte.",
+        "bouquet": ["Jack 3.5mm", "microSD", "Schermo Piatto", "Compatto"],
+        "aging_potential": "Medio"
+      },
+      "metrics": {
+        "collectibility": 82,
+        "repairability": 62,
+        "software_longevity": 60,
+        "battery_risk": "Alto"
+      },
+      "estimated_value_eur": {
+        "min": 210,
+        "max": 330
+      },
+      "last_updated": "2026-11-22"
+    },
+    {
+      "id": "oneplus-7-pro-2019",
+      "brand": "OnePlus",
+      "model": "7 Pro",
+      "release_year": 2019,
+      "vintage_score": 88,
+      "vintage_grade": "Riserva",
+      "tasting_notes": {
+        "summary": "Display Fluid AMOLED 90Hz completamente privo di notch grazie alla fotocamera pop-up meccanica: manifesto di design del 2019.",
+        "bouquet": ["Pop-up Camera", "Zero Notch", "90Hz QHD+"],
+        "aging_potential": "Alto"
+      },
+      "metrics": {
+        "collectibility": 91,
+        "repairability": 60,
+        "software_longevity": 65,
+        "battery_risk": "Alto"
+      },
+      "estimated_value_eur": {
+        "min": 260,
+        "max": 410
+      },
+      "last_updated": "2026-11-22"
+    },
+    {
+      "id": "apple-iphone-se-2016",
+      "brand": "Apple",
+      "model": "iPhone SE (1a gen)",
+      "release_year": 2016,
+      "vintage_score": 91,
+      "vintage_grade": "Gran Riserva",
+      "tasting_notes": {
+        "summary": "Telaio iconico dell'iPhone 5s con cuore A9 e jack audio: un sigillato New Old Stock è ormai pezzo da collezione puro.",
+        "bouquet": ["Design 5s", "4 Pollici", "Jack 3.5mm", "Collezione"],
+        "aging_potential": "Alto"
+      },
+      "metrics": {
+        "collectibility": 96,
+        "repairability": 72,
+        "software_longevity": 45,
+        "battery_risk": "Alto"
+      },
+      "estimated_value_eur": {
+        "min": 220,
+        "max": 450
+      },
+      "last_updated": "2026-11-22"
+    },
+    {
+      "id": "sony-xperia-xz1-compact-2017",
+      "brand": "Sony",
+      "model": "Xperia XZ1 Compact",
+      "release_year": 2017,
+      "vintage_score": 82,
+      "vintage_grade": "Annata Pregiata",
+      "tasting_notes": {
+        "summary": "Ultimo vero tascabile Android da 4.6 pollici con Snapdragon 835 e costruzione monolitica: ricercato dagli amanti dell'ergonomia pura.",
+        "bouquet": ["4.6 Pollici", "Snapdragon 835", "Tasto Otturatore"],
+        "aging_potential": "Medio"
+      },
+      "metrics": {
+        "collectibility": 85,
+        "repairability": 58,
+        "software_longevity": 50,
+        "battery_risk": "Alto"
+      },
+      "estimated_value_eur": {
+        "min": 180,
+        "max": 310
+      },
+      "last_updated": "2026-11-22"
+    },
+    {
+      "id": "fairphone-4-2021",
+      "brand": "Fairphone",
+      "model": "Fairphone 4",
+      "release_year": 2021,
+      "vintage_score": 80,
+      "vintage_grade": "Annata Pregiata",
+      "tasting_notes": {
+        "summary": "Modularità estrema e batteria sostituibile dall'utente senza attrezzi speciali: annata a bassissimo rischio di degrado in cantina.",
+        "bouquet": ["Modulare", "Batteria Rimovibile", "Riparabile 10/10"],
+        "aging_potential": "Alto"
+      },
+      "metrics": {
+        "collectibility": 70,
+        "repairability": 98,
+        "software_longevity": 88,
+        "battery_risk": "Basso"
+      },
+      "estimated_value_eur": {
+        "min": 250,
+        "max": 370
+      },
+      "last_updated": "2026-11-22"
+    },
+    {
+      "id": "essential-phone-ph1-2017",
+      "brand": "Essential",
+      "model": "PH-1",
+      "release_year": 2017,
+      "vintage_score": 86,
+      "vintage_grade": "Riserva",
+      "tasting_notes": {
+        "summary": "Titanio e ceramica con pin magnetici posteriori: un esperimento industriale breve ma leggendario, sempre più raro sigillato.",
+        "bouquet": ["Titanio & Ceramica", "Raro", "Design Minimal"],
+        "aging_potential": "Alto"
+      },
+      "metrics": {
+        "collectibility": 93,
+        "repairability": 35,
+        "software_longevity": 45,
+        "battery_risk": "Alto"
+      },
+      "estimated_value_eur": {
+        "min": 230,
+        "max": 390
+      },
+      "last_updated": "2026-11-22"
+    }
+  ]
+}
