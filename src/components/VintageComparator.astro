@@ -1,4 +1,5 @@
 ---
+import { formatVintageName } from '../lib/scoring';
 import type { Vintage } from '../schemas/vintage';
 
 interface Props {
@@ -10,81 +11,80 @@ const first = vintages[0];
 const second = vintages[1] ?? vintages[0];
 ---
 
-<section class="panel" aria-labelledby="cmp-heading">
-  <div class="panel-header">
-    <h2 id="cmp-heading">Comparatore Annate</h2>
-    <p>Confronta due smartphone New Old Stock su punteggio, collezionabilità, riparabilità e valore.</p>
-  </div>
+<details class="disclosure">
+  <summary>Confronta due annate</summary>
+  <div class="disclosure-body">
+    <div class="cmp-selectors">
+      <label>
+        <span>Annata A</span>
+        <select id="cmp-select-a">
+          {vintages.map((v) => (
+            <option value={v.id} selected={v.id === first.id}>
+              {formatVintageName(v.brand, v.model)} ({v.release_year})
+            </option>
+          ))}
+        </select>
+      </label>
 
-  <div class="cmp-selectors">
-    <label>
-      <span>Annata A</span>
-      <select id="cmp-select-a">
-        {vintages.map((v) => (
-          <option value={v.id} selected={v.id === first.id}>{v.brand} {v.model} ({v.release_year})</option>
-        ))}
-      </select>
-    </label>
+      <label>
+        <span>Annata B</span>
+        <select id="cmp-select-b">
+          {vintages.map((v) => (
+            <option value={v.id} selected={v.id === second.id}>
+              {formatVintageName(v.brand, v.model)} ({v.release_year})
+            </option>
+          ))}
+        </select>
+      </label>
+    </div>
 
-    <label>
-      <span>Annata B</span>
-      <select id="cmp-select-b">
-        {vintages.map((v) => (
-          <option value={v.id} selected={v.id === second.id}>{v.brand} {v.model} ({v.release_year})</option>
-        ))}
-      </select>
-    </label>
-  </div>
-
-  <div class="table-wrap">
     <table class="cmp-table">
       <thead>
         <tr>
           <th>Metrica</th>
-          <th id="cmp-name-a">{first.brand} {first.model}</th>
-          <th id="cmp-name-b">{second.brand} {second.model}</th>
-          <th>Delta (A − B)</th>
+          <th id="cmp-name-a">{formatVintageName(first.brand, first.model)}</th>
+          <th id="cmp-name-b">{formatVintageName(second.brand, second.model)}</th>
+          <th>Differenza</th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td>Punteggio Annata</td>
-          <td id="cmp-score-a">{first.vintage_score}</td>
-          <td id="cmp-score-b">{second.vintage_score}</td>
-          <td id="cmp-delta-score">{first.vintage_score - second.vintage_score}</td>
+          <td data-label="Metrica">Punteggio annata</td>
+          <td data-label="Annata A" id="cmp-score-a">{first.vintage_score}</td>
+          <td data-label="Annata B" id="cmp-score-b">{second.vintage_score}</td>
+          <td data-label="Differenza" id="cmp-delta-score">{first.vintage_score - second.vintage_score}</td>
         </tr>
         <tr>
-          <td>Collezionabilità</td>
-          <td id="cmp-coll-a">{first.metrics.collectibility}</td>
-          <td id="cmp-coll-b">{second.metrics.collectibility}</td>
-          <td id="cmp-delta-coll">{first.metrics.collectibility - second.metrics.collectibility}</td>
+          <td data-label="Metrica">Collezionabilità</td>
+          <td data-label="Annata A" id="cmp-coll-a">{first.metrics.collectibility}</td>
+          <td data-label="Annata B" id="cmp-coll-b">{second.metrics.collectibility}</td>
+          <td data-label="Differenza" id="cmp-delta-coll">{first.metrics.collectibility - second.metrics.collectibility}</td>
         </tr>
         <tr>
-          <td>Riparabilità</td>
-          <td id="cmp-rep-a">{first.metrics.repairability}</td>
-          <td id="cmp-rep-b">{second.metrics.repairability}</td>
-          <td id="cmp-delta-rep">{first.metrics.repairability - second.metrics.repairability}</td>
+          <td data-label="Metrica">Riparabilità</td>
+          <td data-label="Annata A" id="cmp-rep-a">{first.metrics.repairability}</td>
+          <td data-label="Annata B" id="cmp-rep-b">{second.metrics.repairability}</td>
+          <td data-label="Differenza" id="cmp-delta-rep">{first.metrics.repairability - second.metrics.repairability}</td>
         </tr>
         <tr>
-          <td>Longevità Software</td>
-          <td id="cmp-sw-a">{first.metrics.software_longevity}</td>
-          <td id="cmp-sw-b">{second.metrics.software_longevity}</td>
-          <td id="cmp-delta-sw">{first.metrics.software_longevity - second.metrics.software_longevity}</td>
+          <td data-label="Metrica">Longevità software</td>
+          <td data-label="Annata A" id="cmp-sw-a">{first.metrics.software_longevity}</td>
+          <td data-label="Annata B" id="cmp-sw-b">{second.metrics.software_longevity}</td>
+          <td data-label="Differenza" id="cmp-delta-sw">{first.metrics.software_longevity - second.metrics.software_longevity}</td>
         </tr>
         <tr>
-          <td>Range Valore (€)</td>
-          <td id="cmp-val-a">€{first.estimated_value_eur.min}–€{first.estimated_value_eur.max}</td>
-          <td id="cmp-val-b">€{second.estimated_value_eur.min}–€{second.estimated_value_eur.max}</td>
-          <td id="cmp-delta-val">—</td>
+          <td data-label="Metrica">Valore stimato</td>
+          <td data-label="Annata A" id="cmp-val-a">€{first.estimated_value_eur.min}–€{first.estimated_value_eur.max}</td>
+          <td data-label="Annata B" id="cmp-val-b">€{second.estimated_value_eur.min}–€{second.estimated_value_eur.max}</td>
+          <td data-label="Differenza" id="cmp-delta-val">—</td>
         </tr>
       </tbody>
     </table>
   </div>
-  <p class="cmp-winner" id="cmp-winner"></p>
-</section>
+</details>
 
 <script>
-  import { compareVintages } from '../lib/scoring';
+  import { compareVintages, formatVintageName } from '../lib/scoring';
   import type { Vintage } from '../schemas/vintage';
 
   const dataEl = document.getElementById('vintages-data');
@@ -107,8 +107,8 @@ const second = vintages[1] ?? vintages[0];
     if (!a || !b) return;
 
     const cmp = compareVintages(a, b);
-    setText('cmp-name-a', `${a.brand} ${a.model}`);
-    setText('cmp-name-b', `${b.brand} ${b.model}`);
+    setText('cmp-name-a', formatVintageName(a.brand, a.model));
+    setText('cmp-name-b', formatVintageName(b.brand, b.model));
 
     setText('cmp-score-a', a.vintage_score);
     setText('cmp-score-b', b.vintage_score);
@@ -128,14 +128,7 @@ const second = vintages[1] ?? vintages[0];
 
     setText('cmp-val-a', `€${a.estimated_value_eur.min}–€${a.estimated_value_eur.max}`);
     setText('cmp-val-b', `€${b.estimated_value_eur.min}–€${b.estimated_value_eur.max}`);
-    setText('cmp-delta-val', formatDelta(cmp.midpointValueDeltaEur, ' € (med.)'));
-
-    if (cmp.winnerId === 'tie') {
-      setText('cmp-winner', 'Risultato: parità tecnica sul punteggio annata.');
-    } else {
-      const winner = cmp.winnerId === a.id ? a : b;
-      setText('cmp-winner', `Annata superiore: ${winner.brand} ${winner.model} (${winner.release_year}) con ${winner.vintage_score}/100.`);
-    }
+    setText('cmp-delta-val', formatDelta(cmp.midpointValueDeltaEur, ' € sulla mediana'));
   }
 
   selectA?.addEventListener('change', updateComparator);
@@ -144,75 +137,78 @@ const second = vintages[1] ?? vintages[0];
 </script>
 
 <style>
-  .panel {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 1.75rem;
-    margin-bottom: 2rem;
-  }
-
-  .panel-header h2 {
-    margin: 0 0 0.25rem;
-    color: var(--accent);
-  }
-
-  .panel-header p {
-    margin: 0 0 1.25rem;
-    color: var(--muted);
-    font-size: 0.95rem;
-  }
-
   .cmp-selectors {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 1rem;
-    margin-bottom: 1.25rem;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.75rem;
+    margin: 1rem 0;
   }
 
   .cmp-selectors label {
     display: grid;
-    gap: 0.35rem;
-    font-size: 0.9rem;
+    gap: 0.25rem;
+    font-size: 0.88rem;
     font-weight: 600;
   }
 
   .cmp-selectors select {
-    padding: 0.55rem 0.7rem;
+    width: 100%;
+    padding: 0.5rem 0.75rem;
     border: 1px solid var(--border);
     border-radius: 8px;
     background: var(--bg);
     color: var(--ink);
-    font: inherit;
-  }
-
-  .table-wrap {
-    overflow-x: auto;
   }
 
   .cmp-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.95rem;
+    font-size: 0.92rem;
   }
 
   .cmp-table th,
   .cmp-table td {
     text-align: left;
-    padding: 0.65rem 0.75rem;
+    padding: 0.55rem 0.5rem;
     border-bottom: 1px solid var(--border);
   }
 
   .cmp-table th {
     color: var(--muted);
-    font-size: 0.82rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    font-size: 0.85rem;
+    font-weight: 600;
   }
 
-  .cmp-winner {
-    margin: 1rem 0 0;
-    font-weight: 600;
-    color: var(--accent);
+  @media (max-width: 640px) {
+    .cmp-table thead {
+      display: none;
+    }
+
+    .cmp-table,
+    .cmp-table tbody,
+    .cmp-table tr,
+    .cmp-table td {
+      display: block;
+      width: 100%;
+    }
+
+    .cmp-table tr {
+      padding: 0.5rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .cmp-table td {
+      border-bottom: none;
+      padding: 0.2rem 0;
+      display: flex;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    .cmp-table td::before {
+      content: attr(data-label);
+      color: var(--muted);
+      font-weight: 600;
+    }
   }
 </style>

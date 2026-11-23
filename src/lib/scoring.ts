@@ -108,6 +108,23 @@ function midpointValue(vintage: Vintage): number {
 }
 
 /**
+ * Evita prefissi duplicati tipo "Fairphone Fairphone 4".
+ */
+export function formatVintageName(brand: string, model: string): string {
+  const b = brand.trim();
+  const m = model.trim();
+  return m.toLowerCase().startsWith(b.toLowerCase()) ? m : `${b} ${m}`;
+}
+
+/**
+ * Converte YYYY-MM-DD in formato italiano DD/MM/YYYY.
+ */
+export function formatItDate(isoDate: string): string {
+  const parts = isoDate.split('-');
+  return parts.length === 3 ? `${parts[2]}/${parts[1]}/${parts[0]}` : isoDate;
+}
+
+/**
  * Confronta due annate fianco a fianco calcolando i delta delle metriche principali.
  */
 export function compareVintages(a: Vintage, b: Vintage): VintageComparisonResult {

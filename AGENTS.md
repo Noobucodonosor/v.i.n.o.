@@ -2,6 +2,7 @@
 
 > **REGOLA AUREA (MANDATORY):**
 > Prima di modificare l'architettura, toccare il modello dati, aggiungere endpoint o sviluppare nuove feature, **DEVI leggere [`docs/adr/README.md`](./docs/adr/README.md)** e gli ADR specifici nella cartella [`docs/adr/`](./docs/adr/).
+> **Per ogni intervento UI**, rispetta il contratto in [`DESIGN.md`](./DESIGN.md) e compila il Registro delle Esclusioni prima di scrivere codice.
 
 ---
 

@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import VintageCalculator from '../components/VintageCalculator.astro';
 import VintageComparator from '../components/VintageComparator.astro';
 import rawVintages from '../data/vintages.json';
+import { formatVintageName } from '../lib/scoring';
 import { VintagesDatasetSchema } from '../schemas/vintage';
 
 const dataset = VintagesDatasetSchema.parse(rawVintages);
@@ -11,7 +12,6 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 <Layout title="v.i.n.o. — Annate Smartphone New Old Stock">
   <header class="hero">
-    <p class="eyebrow">Vintage Index for New Old-stock</p>
     <h1>v.i.n.o.</h1>
     <p class="lead">
       Gli smartphone nuovi ma mai usati sono come il vino: non invecchiano tutti allo stesso modo, ed esistono buone annate.
@@ -20,72 +20,61 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
   <div id="vintages-data" data-vintages={JSON.stringify(dataset.vintages)} hidden></div>
 
-  <VintageCalculator vintages={dataset.vintages} />
+  <VintageCalculator vintages={dataset.vintages} updatedAt={dataset.updated_at} />
   <VintageComparator vintages={dataset.vintages} />
 
-  <section class="catalog" aria-labelledby="catalog-heading">
-    <h2 id="catalog-heading">Catalogo Annate &amp; Mercato</h2>
-    <div class="catalog-grid">
-      {dataset.vintages.map((v) => (
-        <a class="vintage-card" href={`${base}/vintage/${v.id}/`}>
-          <div class="card-top">
-            <span class="year">{v.release_year}</span>
-            <span class="grade-pill">{v.vintage_grade}</span>
-          </div>
-          <h3>{v.brand} {v.model}</h3>
-          <p class="card-meta">Punteggio: <strong>{v.vintage_score}/100</strong> · €{v.estimated_value_eur.min}–€{v.estimated_value_eur.max}</p>
-        </a>
-      ))}
+  <details class="disclosure">
+    <summary>Esplora tutte le {dataset.vintages.length} annate</summary>
+    <div class="disclosure-body">
+      <div class="catalog-grid">
+        {dataset.vintages.map((v) => (
+          <a class="vintage-card" href={`${base}/vintage/${v.id}/`}>
+            <h3>{formatVintageName(v.brand, v.model)} ({v.release_year})</h3>
+            <p class="card-meta">
+              {v.vintage_score}/100 · {v.vintage_grade} · €{v.estimated_value_eur.min}–€{v.estimated_value_eur.max}
+            </p>
+          </a>
+        ))}
+      </div>
     </div>
-  </section>
+  </details>
 </Layout>
 
 <style>
   .hero {
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 2rem;
-    margin-bottom: 2.5rem;
-  }
-
-  .eyebrow {
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    font-size: 0.78rem;
-    font-weight: 700;
-    color: var(--accent);
-    margin: 0 0 0.5rem;
+    margin-bottom: 1.25rem;
   }
 
   h1 {
-    font-size: clamp(2.5rem, 6vw, 4rem);
-    margin: 0 0 0.75rem;
+    font-size: clamp(2rem, 5vw, 2.75rem);
+    margin: 0 0 0.25rem;
     letter-spacing: -0.03em;
+    line-height: 1.1;
   }
 
   .lead {
-    font-size: 1.2rem;
+    font-size: 1rem;
     color: var(--muted);
-    max-width: 62ch;
+    max-width: 60ch;
     margin: 0;
-  }
-
-  .catalog h2 {
-    margin: 0 0 1rem;
-    color: var(--accent);
   }
 
   .catalog-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 1rem;
+    gap: 0.75rem;
+    padding-top: 1rem;
   }
 
   .vintage-card {
-    display: block;
-    background: var(--surface);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 44px;
+    background: var(--bg);
     border: 1px solid var(--border);
     border-radius: 10px;
-    padding: 1.15rem;
+    padding: 0.9rem 1rem;
     color: inherit;
     text-decoration: none;
   }
@@ -94,35 +83,14 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     border-color: var(--accent);
   }
 
-  .card-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.4rem;
-    font-size: 0.8rem;
-  }
-
-  .year {
-    font-weight: 700;
-    color: var(--muted);
-  }
-
-  .grade-pill {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    padding: 0.15rem 0.5rem;
-    border-radius: 999px;
-    font-weight: 600;
-  }
-
   .vintage-card h3 {
-    margin: 0 0 0.35rem;
-    font-size: 1.05rem;
+    margin: 0 0 0.25rem;
+    font-size: 1rem;
   }
 
   .card-meta {
     margin: 0;
-    font-size: 0.88rem;
+    font-size: 0.86rem;
     color: var(--muted);
   }
 </style>

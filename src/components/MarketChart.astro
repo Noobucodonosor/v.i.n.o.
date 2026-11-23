@@ -1,4 +1,5 @@
 ---
+import { formatItDate } from '../lib/scoring';
 import type { MarketSnapshot } from '../schemas/offer';
 
 interface Props {
@@ -6,41 +7,61 @@ interface Props {
 }
 
 const { snapshots } = Astro.props;
-const prices = snapshots
+
+// Rimuove rilevazioni consecutive identiche per evitare ridondanza (B1)
+const uniqueSnapshots = snapshots.filter((snap, idx) => {
+  if (idx === 0) return true;
+  const prev = snapshots[idx - 1];
+  return (
+    snap.median_asking_eur !== prev.median_asking_eur ||
+    snap.median_sold_eur !== prev.median_sold_eur ||
+    snap.active_count !== prev.active_count ||
+    snap.sold_count !== prev.sold_count ||
+    snap.expired_count !== prev.expired_count
+  );
+});
+
+const prices = uniqueSnapshots
   .flatMap((s) => [s.median_asking_eur, s.median_sold_eur])
   .filter((p): p is number => p !== null);
 const maxPrice = prices.length > 0 ? Math.max(...prices) : 1;
+
+function formatCounts(snap: MarketSnapshot): string {
+  const parts: string[] = [];
+  if (snap.active_count > 0) parts.push(`${snap.active_count} ${snap.active_count === 1 ? 'attiva' : 'attive'}`);
+  if (snap.sold_count > 0) parts.push(`${snap.sold_count} ${snap.sold_count === 1 ? 'venduta' : 'vendute'}`);
+  if (snap.expired_count > 0) parts.push(`${snap.expired_count} ${snap.expired_count === 1 ? 'scaduta' : 'scadute'}`);
+  return parts.length > 0 ? parts.join(', ') : 'nessuna offerta attiva';
+}
 ---
 
 <section class="panel" aria-labelledby="market-chart-heading">
   <h2 id="market-chart-heading">Storico Mercato</h2>
-  {snapshots.length === 0 ? (
+  {uniqueSnapshots.length === 0 ? (
     <p class="empty">Nessuno snapshot storico ancora registrato per questa annata.</p>
   ) : (
     <div class="snapshots">
-      {snapshots.map((snap) => {
+      {uniqueSnapshots.map((snap) => {
         const askingPct = snap.median_asking_eur ? Math.round((snap.median_asking_eur / maxPrice) * 100) : 0;
         const soldPct = snap.median_sold_eur ? Math.round((snap.median_sold_eur / maxPrice) * 100) : 0;
         return (
           <div class="snap-row">
-            <span class="snap-date">{snap.date}</span>
+            <span class="snap-date">{formatItDate(snap.date)}</span>
             <div class="bars">
               {snap.median_asking_eur !== null && (
                 <div class="bar-wrap">
                   <span class="bar asking" style={`width: ${askingPct}%`}></span>
-                  <span class="bar-label">Richiesta med.: €{snap.median_asking_eur}</span>
+                  <span class="bar-label">Richiesta mediana €{snap.median_asking_eur}</span>
                 </div>
               )}
               {snap.median_sold_eur !== null && (
                 <div class="bar-wrap">
                   <span class="bar sold" style={`width: ${soldPct}%`}></span>
-                  <span class="bar-label">Venduto med.: €{snap.median_sold_eur}</span>
+                  <span class="bar-label">Venduto mediano €{snap.median_sold_eur}</span>
                 </div>
               )}
             </div>
-            <span class="counts">
-              {snap.active_count} attive · {snap.sold_count} vendute · {snap.expired_count} scadute
-            </span>
+            <span class="counts">{formatCounts(snap)}</span>
           </div>
         );
       })}
@@ -53,14 +74,14 @@ const maxPrice = prices.length > 0 ? Math.max(...prices) : 1;
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 12px;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
   }
 
   h2 {
-    margin: 0 0 1rem;
+    margin: 0 0 0.9rem;
     color: var(--accent);
-    font-size: 1.2rem;
+    font-size: 1.15rem;
   }
 
   .empty {
@@ -70,15 +91,15 @@ const maxPrice = prices.length > 0 ? Math.max(...prices) : 1;
 
   .snapshots {
     display: grid;
-    gap: 0.9rem;
+    gap: 0.75rem;
   }
 
   .snap-row {
     display: grid;
     grid-template-columns: 100px 1fr auto;
-    gap: 1rem;
+    gap: 0.75rem;
     align-items: center;
-    padding-bottom: 0.75rem;
+    padding-bottom: 0.65rem;
     border-bottom: 1px solid var(--border);
     font-size: 0.9rem;
   }
@@ -116,13 +137,13 @@ const maxPrice = prices.length > 0 ? Math.max(...prices) : 1;
   .bar-label,
   .counts {
     color: var(--muted);
-    font-size: 0.84rem;
+    font-size: 0.85rem;
   }
 
   @media (max-width: 640px) {
     .snap-row {
       grid-template-columns: 1fr;
-      gap: 0.4rem;
+      gap: 0.35rem;
     }
   }
 </style>
