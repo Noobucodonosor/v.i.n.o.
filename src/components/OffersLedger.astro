@@ -1,4 +1,5 @@
 ---
+import { formatItDate } from '../lib/scoring';
 import type { Offer } from '../schemas/offer';
 
 interface Props {
@@ -13,98 +14,94 @@ const STATUS_LABELS: Record<Offer['status'], string> = {
   expired: 'Scaduta',
   unverified: 'Da verificare',
 };
+
+const SOURCE_LABELS: Record<Offer['source'], string> = {
+  ebay: 'eBay',
+  subito: 'Subito',
+  wallapop: 'Wallapop',
+  vinted: 'Vinted',
+  community: 'Segnalazione verificata',
+};
 ---
 
-<section class="panel" aria-labelledby="ledger-heading">
-  <h2 id="ledger-heading">Registro Offerte Persistenti</h2>
-  {offers.length === 0 ? (
-    <p class="empty">Nessuna offerta tracciata finora per questa annata.</p>
-  ) : (
-    <div class="table-wrap">
+<details class="disclosure">
+  <summary>Vedi storico segnalazioni ({offers.length})</summary>
+  <div class="disclosure-body">
+    {offers.length === 0 ? (
+      <p class="empty">Nessuna offerta tracciata finora per questa annata.</p>
+    ) : (
       <table class="ledger-table">
         <thead>
           <tr>
             <th>Inserzione</th>
             <th>Fonte</th>
             <th>Stato</th>
-            <th>Ultimo Prezzo</th>
-            <th>Periodo Tracciato</th>
+            <th>Prezzo</th>
+            <th>Rilevazione</th>
           </tr>
         </thead>
         <tbody>
           {offers.map((offer) => {
             const firstPrice = offer.price_history[0]?.price;
             const lastPrice = offer.price_history[offer.price_history.length - 1]?.price;
+            const isRepoSeed = offer.url.includes('github.com/Noobucodonosor/v.i.n.o.');
+            const periodLabel =
+              offer.first_seen === offer.last_seen
+                ? `dal ${formatItDate(offer.first_seen)}`
+                : `${formatItDate(offer.first_seen)} – ${formatItDate(offer.last_seen)}`;
             return (
               <tr>
-                <td>
-                  <a href={offer.url} target="_blank" rel="noopener noreferrer">
-                    {offer.title}
-                  </a>
+                <td data-label="Inserzione">
+                  {isRepoSeed ? (
+                    <span>{offer.title}</span>
+                  ) : (
+                    <a href={offer.url} target="_blank" rel="noopener noreferrer">
+                      {offer.title}
+                    </a>
+                  )}
                 </td>
-                <td>{offer.source}</td>
-                <td>
-                  <span class={`status status-${offer.status}`}>
-                    {STATUS_LABELS[offer.status]}
-                  </span>
-                </td>
-                <td>
+                <td data-label="Fonte">{SOURCE_LABELS[offer.source]}</td>
+                <td data-label="Stato">{STATUS_LABELS[offer.status]}</td>
+                <td data-label="Prezzo">
                   €{lastPrice}
                   {firstPrice !== lastPrice && (
                     <span class="old-price"> (da €{firstPrice})</span>
                   )}
                 </td>
-                <td>{offer.first_seen} → {offer.last_seen}</td>
+                <td data-label="Rilevazione">{periodLabel}</td>
               </tr>
             );
           })}
         </tbody>
       </table>
-    </div>
-  )}
-</section>
+    )}
+  </div>
+</details>
 
 <style>
-  .panel {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-  }
-
-  h2 {
-    margin: 0 0 1rem;
-    color: var(--accent);
-    font-size: 1.2rem;
-  }
-
   .empty {
-    margin: 0;
+    margin: 1rem 0 0;
     color: var(--muted);
-  }
-
-  .table-wrap {
-    overflow-x: auto;
   }
 
   .ledger-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.92rem;
+    font-size: 0.9rem;
+    margin-top: 0.75rem;
   }
 
   .ledger-table th,
   .ledger-table td {
     text-align: left;
-    padding: 0.65rem 0.75rem;
+    padding: 0.55rem 0.5rem;
     border-bottom: 1px solid var(--border);
   }
 
   .ledger-table th {
     color: var(--muted);
-    font-size: 0.8rem;
-    text-transform: uppercase;
+    font-size: 0.84rem;
+    font-weight: 600;
   }
 
   .ledger-table a {
@@ -114,32 +111,42 @@ const STATUS_LABELS: Record<Offer['status'], string> = {
     text-decoration-color: var(--border);
   }
 
-  .status {
-    display: inline-block;
-    padding: 0.18rem 0.55rem;
-    border-radius: 999px;
-    font-size: 0.78rem;
-    font-weight: 700;
-  }
-
-  .status-active {
-    background: #e6f4ea;
-    color: #1e6b3a;
-  }
-
-  .status-sold {
-    background: #ede7f6;
-    color: #4a237a;
-  }
-
-  .status-expired,
-  .status-unverified {
-    background: #f3eee8;
-    color: var(--muted);
-  }
-
   .old-price {
     color: var(--muted);
     font-size: 0.82rem;
+  }
+
+  @media (max-width: 640px) {
+    .ledger-table thead {
+      display: none;
+    }
+
+    .ledger-table,
+    .ledger-table tbody,
+    .ledger-table tr,
+    .ledger-table td {
+      display: block;
+      width: 100%;
+    }
+
+    .ledger-table tr {
+      padding: 0.65rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .ledger-table td {
+      border-bottom: none;
+      padding: 0.2rem 0;
+      display: flex;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+
+    .ledger-table td::before {
+      content: attr(data-label);
+      color: var(--muted);
+      font-weight: 600;
+      flex-shrink: 0;
+    }
   }
 </style>

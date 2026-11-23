@@ -5,6 +5,7 @@ import OffersLedger from '../../components/OffersLedger.astro';
 import rawVintages from '../../data/vintages.json';
 import rawOffers from '../../data/offers.json';
 import rawHistory from '../../data/market-history.json';
+import { formatItDate, formatVintageName } from '../../lib/scoring';
 import { VintagesDatasetSchema, type Vintage } from '../../schemas/vintage';
 import { MarketHistorySchema, OffersLedgerSchema } from '../../schemas/offer';
 
@@ -27,32 +28,27 @@ const marketHistory = MarketHistorySchema.parse(rawHistory);
 const vintageOffers = offersLedger.offers.filter((o) => o.vintage_id === vintage.id);
 const vintageSnapshots = marketHistory.series[vintage.id] ?? [];
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const displayName = formatVintageName(vintage.brand, vintage.model);
 ---
 
-<Layout title={`${vintage.brand} ${vintage.model} (${vintage.release_year}) — v.i.n.o.`}>
+<Layout title={`${displayName} (${vintage.release_year}) — v.i.n.o.`}>
   <nav class="breadcrumb">
-    <a href={`${base}/`}>← Torna al calcolatore e catalogo</a>
+    <a href={`${base}/`}>← Torna al calcolatore</a>
   </nav>
 
   <header class="vintage-header">
     <div>
-      <p class="eyebrow">{vintage.brand} · Annata {vintage.release_year}</p>
-      <h1>{vintage.model}</h1>
+      <h1>{displayName} ({vintage.release_year})</h1>
+      <p class="synthesis">
+        <strong>{vintage.vintage_score}/100 · {vintage.vintage_grade}</strong> — valore stimato
+        €{vintage.estimated_value_eur.min}–€{vintage.estimated_value_eur.max}; collezione
+        {vintage.metrics.collectibility}/100, longevità software {vintage.metrics.software_longevity}/100,
+        riparabilità {vintage.metrics.repairability}/100 e rischio batteria {vintage.metrics.battery_risk.toLowerCase()}.
+      </p>
       <p class="summary">{vintage.tasting_notes.summary}</p>
-    </div>
-    <div class="score-box">
-      <span class="score">{vintage.vintage_score}</span>
-      <span class="grade">{vintage.vintage_grade}</span>
+      <p class="freshness">Rilevazione dati: {formatItDate(vintage.last_updated)}</p>
     </div>
   </header>
-
-  <section class="metrics-grid" aria-label="Metriche annata">
-    <div class="metric"><span>Collezionabilità</span><strong>{vintage.metrics.collectibility}/100</strong></div>
-    <div class="metric"><span>Riparabilità</span><strong>{vintage.metrics.repairability}/100</strong></div>
-    <div class="metric"><span>Longevità SW</span><strong>{vintage.metrics.software_longevity}/100</strong></div>
-    <div class="metric"><span>Rischio Batteria</span><strong>{vintage.metrics.battery_risk}</strong></div>
-    <div class="metric"><span>Valore Stimato</span><strong>€{vintage.estimated_value_eur.min}–€{vintage.estimated_value_eur.max}</strong></div>
-  </section>
 
   <MarketChart snapshots={vintageSnapshots} />
   <OffersLedger offers={vintageOffers} />
@@ -60,88 +56,45 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 <style>
   .breadcrumb {
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.75rem;
   }
 
   .breadcrumb a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
     color: var(--accent);
     text-decoration: none;
     font-weight: 600;
   }
 
   .vintage-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 1.5rem;
-    padding-bottom: 1.5rem;
+    padding-bottom: 1.25rem;
     border-bottom: 1px solid var(--border);
-    margin-bottom: 1.5rem;
-  }
-
-  .eyebrow {
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    font-size: 0.8rem;
-    font-weight: 700;
-    color: var(--accent);
-    margin: 0 0 0.35rem;
+    margin-bottom: 1.25rem;
   }
 
   h1 {
     margin: 0 0 0.5rem;
-    font-size: clamp(1.8rem, 4vw, 2.75rem);
+    font-size: clamp(1.65rem, 4vw, 2.4rem);
+    line-height: 1.15;
+  }
+
+  .synthesis {
+    margin: 0 0 0.5rem;
+    font-size: 1rem;
+    color: var(--ink);
   }
 
   .summary {
+    margin: 0 0 0.4rem;
+    color: var(--muted);
+    max-width: 64ch;
+  }
+
+  .freshness {
     margin: 0;
+    font-size: 0.84rem;
     color: var(--muted);
-    max-width: 60ch;
-  }
-
-  .score-box {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 1rem 1.25rem;
-    text-align: center;
-    min-width: 140px;
-  }
-
-  .score {
-    display: block;
-    font-size: 2.25rem;
-    font-weight: 800;
-    color: var(--accent);
-  }
-
-  .grade {
-    font-size: 0.82rem;
-    font-weight: 700;
-  }
-
-  .metrics-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 0.9rem;
-    margin-bottom: 2rem;
-  }
-
-  .metric {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 0.9rem 1rem;
-  }
-
-  .metric span {
-    display: block;
-    font-size: 0.78rem;
-    color: var(--muted);
-    margin-bottom: 0.25rem;
-  }
-
-  .metric strong {
-    font-size: 1.05rem;
   }
 </style>
