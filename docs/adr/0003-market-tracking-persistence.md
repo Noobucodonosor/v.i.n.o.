@@ -1,9 +1,9 @@
 # ADR-0003: Persistenza Offerte e Market Tracking Git-Backed
 
-- **Stato:** Proposto (`Proposed`)
+- **Stato:** Accettato (`Proposed`)
 - **Priorità:** P1 — Alta
 - **Data:** 2026-11-21
-- **Autori:** Dany
+- **Autori:** Noobucodonosor
 - **Fonti:** Requisito utente ("accedendo a internet riesce a mantenere persistenti le offerte e a tracciare un mercato"), scelta persistenza Git-backed + multi-fonte (eBay API, marketplace IT/EU, segnalazioni community)
 
 ---

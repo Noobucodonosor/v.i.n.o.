@@ -16,11 +16,11 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/Noobucodonosor/v.i.n.o./issues"
   },
-  "homepage": "https://github.com/Noobucodonosor/v.i.n.o.#readme",
+  "homepage": "https://noobucodonosor.github.io/v.i.n.o./",
   "dependencies": {
     "astro": "^7.4.13",
     "zod": "^4.6.7"

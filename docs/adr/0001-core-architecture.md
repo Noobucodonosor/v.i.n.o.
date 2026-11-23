@@ -1,9 +1,9 @@
 # ADR-0001: Architettura Core, Stack Tecnologico e Modello Dati/Business (`v.i.n.o.`)
 
-- **Stato:** Proposto (`Proposed`)
+- **Stato:** Accettato (`Proposed`)
 - **Priorità:** P1 — Alta (Baseline)
 - **Data:** 2026-11-21
-- **Autori:** Dany
+- **Autori:** Noobucodonosor
 - **Fonti:** Requisiti iniziali utente ("smartphone nuovi ma mai usati come il vino: esistono buone annate"), scelte stack (Astro + GitHub Pages + GitHub Actions)
 
 ---

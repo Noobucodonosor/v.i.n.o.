@@ -1,9 +1,9 @@
 # ADR-0002: Sicurezza Pipeline Dati, Validazione Input e Hardening GitHub Pages
 
-- **Stato:** Proposto (`Proposed`)
+- **Stato:** Accettato (`Proposed`)
 - **Priorità:** P0 — Critica
 - **Data:** 2026-11-21
-- **Autori:** Dany
+- **Autori:** Noobucodonosor
 - **Fonti:** Requisiti di sicurezza metodologia ADR + pipeline GitHub Actions per dati esterni
 
 ---
