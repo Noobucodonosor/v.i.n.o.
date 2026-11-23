@@ -55,15 +55,15 @@ Le inserzioni online di smartphone nuovi mai usati (*New Old Stock / sigillati*)
 
 ## 4. Task Operativi Collegati (con Definition of Done)
 
-- [ ] **TASK-MKT-01**: **Schema persistenza offerte (`offers.json`), serie storica (`market-history.json`) e motore di lifecycle/deduplicazione**
+- [x] **TASK-MKT-01**: **Schema persistenza offerte (`offers.json`), serie storica (`market-history.json`) e motore di lifecycle/deduplicazione**
   - *File coinvolti*: `src/schemas/offer.ts`, `src/data/offers.json`, `src/data/market-history.json`, `scripts/market_tracker.py`
   - *Acceptance Criteria*: Deduplicazione idempotente per `source:external_id`, aggiornamento `price_history` solo su variazione prezzo, transizione stato `active -> expired/sold` e calcolo aggregati in `market-history.json`.
   - *Verification Step*: `pytest tests/test_market_tracker.py` (o equivalente test unitario su fixture mock)
-- [ ] **TASK-MKT-02**: **Connettori modulari multi-fonte (eBay API, marketplace IT/EU, community)**
+- [x] **TASK-MKT-02**: **Connettori modulari multi-fonte (eBay API, marketplace IT/EU, community)**
   - *File coinvolti*: `scripts/connectors/base.py`, `scripts/connectors/ebay.py`, `scripts/connectors/marketplaces_eu.py`, `scripts/connectors/community.py`
   - *Acceptance Criteria*: Ogni connettore normalizza l'output nello schema comune, gestisce errori di rete/rate-limit con graceful degradation e rispetta la separazione dei segreti.
   - *Verification Step*: `python3 scripts/update_vintages.py --dry-run`
-- [ ] **TASK-MKT-03**: **UI Astro per andamento mercato e offerte persistenti per annata**
+- [x] **TASK-MKT-03**: **UI Astro per andamento mercato e offerte persistenti per annata**
   - *File coinvolti*: `src/components/MarketChart.astro`, `src/components/OffersLedger.astro`, `src/pages/vintage/[slug].astro`
   - *Acceptance Criteria*: Ogni scheda annata mostra lo storico prezzi aggregato e l'elenco delle offerte tracciate (attive e storiche/chiuse) senza esporre HTML non sanitizzato.
   - *Verification Step*: `npm run build`

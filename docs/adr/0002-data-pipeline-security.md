@@ -43,7 +43,7 @@ Il progetto **v.i.n.o.** combina una web app statica su GitHub Pages con una pip
 
 ## 4. Task Operativi Collegati (con Definition of Done)
 
-- [ ] **TASK-SEC-01**: **Hardening validazione dati esterni, sanitizzazione UI e permessi GitHub Actions**
+- [x] **TASK-SEC-01**: **Hardening validazione dati esterni, sanitizzazione UI e permessi GitHub Actions**
   - *File coinvolti*: `.github/workflows/update-data.yml`, `.github/workflows/deploy-pages.yml`, `src/schemas/vintage.ts`
   - *Acceptance Criteria*: Tutti i workflow hanno `permissions` minime esplicite; lo schema rifiuta payload malformati o stringhe con HTML/script; nessun segreto è esposto nel bundle `dist/`.
   - *Verification Step*: `python3 ~/.gemini/config/skills/adr-github-methodology/scripts/pre_release_check.py && npm run build`

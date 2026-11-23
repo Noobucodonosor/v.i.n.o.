@@ -50,19 +50,19 @@ Vincoli tecnici e operativi:
 
 ## 4. Task Operativi Collegati (con Definition of Done)
 
-- [ ] **TASK-CORE-01**: **Inizializzazione progetto Astro + TypeScript e deploy GitHub Pages**
+- [x] **TASK-CORE-01**: **Inizializzazione progetto Astro + TypeScript e deploy GitHub Pages**
   - *File coinvolti*: `package.json`, `astro.config.mjs`, `tsconfig.json`, `.github/workflows/deploy-pages.yml`
   - *Acceptance Criteria*: Il progetto Astro si avvia in locale e genera la build statica in `dist/`; il workflow GitHub Actions pubblica correttamente su GitHub Pages.
   - *Verification Step*: `npm run build`
-- [ ] **TASK-CORE-02**: **Definizione schema dati "Annate" (`vintages.json`) e dataset iniziale**
+- [x] **TASK-CORE-02**: **Definizione schema dati "Annate" (`vintages.json`) e dataset iniziale**
   - *File coinvolti*: `src/schemas/vintage.ts`, `src/data/vintages.json`
   - *Acceptance Criteria*: Schema validato con Zod (o equivalente) con almeno 5-10 modelli rappresentativi di diverse annate e campi per note di "degustazione" e fattori di rischio/valore.
   - *Verification Step*: `npm test` (validazione schema sul dataset)
-- [ ] **TASK-CORE-03**: **Sviluppo Calcolatore e Comparatore di "Annate" interattivo**
+- [x] **TASK-CORE-03**: **Sviluppo Calcolatore e Comparatore di "Annate" interattivo**
   - *File coinvolti*: `src/components/VintageCalculator.astro` (o Island TS/React/Preact), `src/components/VintageComparator.astro`, `src/lib/scoring.ts`
   - *Acceptance Criteria*: L'utente può calcolare il punteggio di un'annata selezionando modello/condizioni e confrontare almeno 2 smartphone fianco a fianco; la funzione di scoring è coperta da unit test.
   - *Verification Step*: `npm test && npm run build`
-- [ ] **TASK-DATA-01**: **Pipeline GitHub Actions per aggiornamento periodico dati statici**
+- [x] **TASK-DATA-01**: **Pipeline GitHub Actions per aggiornamento periodico dati statici**
   - *File coinvolti*: `scripts/update_vintages.py` (o `.ts`), `.github/workflows/update-data.yml`
   - *Acceptance Criteria*: Lo script aggiorna o arricchisce i dati in modo idempotente, valida lo schema prima di salvare e non sovrascrive con dati vuoti/corrotti in caso di errore API.
   - *Verification Step*: `python3 scripts/update_vintages.py --dry-run` (o equivalente comando di test)
