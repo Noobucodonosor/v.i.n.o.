@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "updated_at": "2026-11-22",
+  "updated_at": "2026-11-23",
   "offers": [
     {
       "id": "community:seed-iphone13mini-01",
@@ -14,7 +14,7 @@
       "first_seen": "2026-11-22",
       "last_seen": "2026-11-22",
       "closed_at": null,
-      "missed_runs": 1,
+      "missed_runs": 2,
       "price_history": [
         {
           "date": "2026-11-22",

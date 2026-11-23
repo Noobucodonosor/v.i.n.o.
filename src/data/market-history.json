@@ -1,10 +1,18 @@
 {
   "version": "1.0.0",
-  "updated_at": "2026-11-22",
+  "updated_at": "2026-11-23",
   "series": {
     "apple-iphone-13-mini-2021": [
       {
         "date": "2026-11-22",
+        "median_asking_eur": 590,
+        "median_sold_eur": null,
+        "active_count": 1,
+        "sold_count": 0,
+        "expired_count": 0
+      },
+      {
+        "date": "2026-11-23",
         "median_asking_eur": 590,
         "median_sold_eur": null,
         "active_count": 1,
